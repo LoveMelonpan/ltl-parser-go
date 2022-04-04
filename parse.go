@@ -5,13 +5,6 @@ import (
 	"log"
 )
 
-/*
-type Node struct {
-	N_type string
-	Value  []Token
-	Child  []*Node
-}
-*/
 type Node struct {
 	Ntype    string //state
 	Operator string // terminal sign
