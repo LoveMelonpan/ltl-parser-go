@@ -7,10 +7,12 @@ import (
 
 func TestParse(t *testing.T) {
 	formula := "Fa"
-	tokens := Tex(formula)
-	ast := Parse(tokens)
-	traverse(ast)
-	if formula != "Fa" {
+	tokens := Lex(formula)
+	parser := NewParser(tokens)
+	tree := parser.ParseTree()
+	traverse(tree)
+
+	if 1 != 1 {
 		t.Error("error")
 	}
 }
@@ -19,8 +21,8 @@ func traverse(root *Node) {
 	if root == nil {
 		return
 	}
-	fmt.Println(root)
-	for _, v := range root.Child {
-		traverse(v)
+	fmt.Printf("%v\n", root)
+	for _, node := range root.Child {
+		traverse(node)
 	}
 }

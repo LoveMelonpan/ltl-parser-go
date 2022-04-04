@@ -5,22 +5,22 @@ import (
 	"testing"
 )
 
-func TestTex(t *testing.T) {
+func TestLex(t *testing.T) {
 	formula := "Fa"
-	res := Tex(formula)
+	res := Lex(formula)
 
 	f1 := "F((p||q)U(q&&r)))"
-	fmt.Println(Tex(f1))
+	fmt.Println(Lex(f1))
 
 	except := []Token{
 		{
 			Value:    "F",
-			T_type:   FUTURE,
+			ttype:    FUTURE,
 			position: 0,
 		},
 		{
 			Value:    "a",
-			T_type:   PROP,
+			ttype:    PROP,
 			position: 1,
 		},
 	}
