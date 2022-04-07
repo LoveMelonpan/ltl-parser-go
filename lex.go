@@ -194,3 +194,61 @@ func Lex(formula string) []Token {
 
 	}
 }
+
+/*simpify token*/
+type SimplifyFunc func(*[]Token)
+
+type TokenSimplifier struct {
+	simplifiers []SimplifyFunc
+}
+
+func (s *TokenSimplifier) Register(f SimplifyFunc) {
+	s.simplifiers = append(s.simplifiers, f)
+}
+
+func (s *TokenSimplifier) Simpify(tokens *[]Token) {
+	for _, f := range s.simplifiers {
+		f(tokens)
+	}
+}
+
+/*rule1:if neg after neg,remove */
+func removeRepeatNeg(tokens *[]Token) {
+	if len(*tokens) < 2 {
+		return
+	}
+	ttype := NEG
+	i := 0
+	next := 1
+	for next < len(*tokens) {
+		if (*tokens)[i].ttype == ttype && (*tokens)[next].ttype == ttype {
+			*tokens = append((*tokens)[:i], (*tokens)[next+1:]...)
+		} else {
+			next++
+			i++
+		}
+	}
+}
+
+/*rule2:future after future /global after global ,remain 1 future/global*/
+func removeRepeatFutureAndAlways(tokens *[]Token) {
+	if len(*tokens) < 1 {
+		return
+	}
+
+	s := -1
+	i := 0
+	for i < len(*tokens) {
+		if s == -1 || !(((*tokens)[i].ttype == FUTURE && (*tokens)[s].ttype == FUTURE) || ((*tokens)[i].ttype == ALWAYS && (*tokens)[s].ttype == ALWAYS)) {
+			s++
+			(*tokens)[s] = (*tokens)[i]
+			i++
+		} else if ((*tokens)[i].ttype == FUTURE && (*tokens)[s].ttype == FUTURE) || ((*tokens)[i].ttype == ALWAYS && (*tokens)[s].ttype == ALWAYS) {
+			for i < len(*tokens) && (*tokens)[s].ttype == (*tokens)[i].ttype {
+				i++
+			}
+
+		}
+	}
+	(*tokens) = (*tokens)[:s+1]
+}
